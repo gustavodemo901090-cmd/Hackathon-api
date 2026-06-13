@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { Vaga } from './Vaga';
 
 export enum EmpresaStatus {
   PENDENTE = 'PENDENTE',
@@ -40,4 +42,7 @@ export class Empresa {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Vaga, (vaga) => vaga.empresa)
+  vagas: Vaga[];
 }

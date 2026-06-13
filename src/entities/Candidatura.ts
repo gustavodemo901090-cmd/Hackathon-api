@@ -3,11 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { Aluno } from './Aluno';
+import { Vaga } from './Vaga';
 
 export enum CandidaturaStatus {
   PENDENTE = 'PENDENTE',
@@ -36,10 +36,11 @@ export class Candidatura {
   @CreateDateColumn()
   dataCandidatura: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @ManyToOne(() => Aluno, (aluno) => aluno.candidaturas, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Aluno, (aluno) => aluno.candidaturas)
   @JoinColumn({ name: 'alunoId' })
   aluno: Aluno;
+
+  @ManyToOne(() => Vaga, (vaga) => vaga.candidaturas)
+  @JoinColumn({ name: 'vagaId' })
+  vaga: Vaga;
 }
