@@ -3,6 +3,7 @@ import { AppDataSource } from '../config/data-source';
 import { Candidatura, CandidaturaStatus } from '../entities/Candidatura';
 import { Aluno } from '../entities/Aluno';
 import { Vaga, VagaStatus } from '../entities/Vaga';
+import { EmpresaStatus } from '../entities/Empresa';
 import { Notificacao } from '../entities/Notificacao';
 import { AppError } from '../errors/AppError';
 import { CreateCandidaturaInput, UpdateCandidaturaInput } from '../schemas/candidaturaSchema';
@@ -27,12 +28,20 @@ export class CandidaturaService {
   async create(data: CreateCandidaturaInput): Promise<Candidatura> {
     const aluno = await this.alunoRepo.findOneBy({ id: data.alunoId });
     if (!aluno) throw new AppError('Aluno não encontrado', 404);
-    if (!aluno.aptoEstagio) throw new AppError('Aluno não está apto para estágio', 403);
+    if (!aluno.aptoEstagio) {
+      throw new AppError(
+        'Seu cadastro ainda não está apto para participar de processos de estágio. Aguarde a validação da UniALFA.',
+        403,
+      );
+    }
 
     const vaga = await this.vagaRepo.findOne({ where: { id: data.vagaId }, relations: ['empresa'] });
     if (!vaga) throw new AppError('Vaga não encontrada', 404);
     if (vaga.status === VagaStatus.ENCERRADA) {
       throw new AppError('Vaga encerrada não aceita candidaturas', 400);
+    }
+    if (vaga.empresa?.status !== EmpresaStatus.APROVADA) {
+      throw new AppError('Empresa responsável pela vaga não está aprovada', 403);
     }
 
     const jaExiste = await this.repo.findOneBy({ alunoId: data.alunoId, vagaId: data.vagaId });
@@ -58,6 +67,22 @@ export class CandidaturaService {
     });
   }
 
+  async findByAluno(alunoId: number): Promise<Candidatura[]> {
+    return this.repo.find({
+      where: { alunoId },
+      relations: ['aluno', 'vaga'],
+      order: { dataCandidatura: 'DESC' },
+    });
+  }
+
+  async findByEmpresa(empresaId: number): Promise<Candidatura[]> {
+    return this.repo.find({
+      where: { vaga: { empresaId } },
+      relations: ['aluno', 'vaga'],
+      order: { dataCandidatura: 'DESC' },
+    });
+  }
+
   async findById(id: number): Promise<Candidatura> {
     const candidatura = await this.repo.findOne({
       where: { id },
@@ -70,15 +95,30 @@ export class CandidaturaService {
   async update(id: number, data: UpdateCandidaturaInput): Promise<Candidatura> {
     const candidatura = await this.findById(id);
     const oldStatus = candidatura.status;
+    const oldObservacao = candidatura.observacao;
 
     Object.assign(candidatura, data);
     const saved = await this.repo.save(candidatura);
 
-    if (data.status && data.status !== oldStatus) {
+    const statusAlterado = Boolean(data.status && data.status !== oldStatus);
+    const observacaoAlterada = data.observacao !== undefined && data.observacao !== oldObservacao;
+
+    if (statusAlterado || observacaoAlterada) {
+      const statusLabels: Record<CandidaturaStatus, string> = {
+        [CandidaturaStatus.PENDENTE]: 'Enviada',
+        [CandidaturaStatus.EM_ANALISE]: 'Em análise',
+        [CandidaturaStatus.APROVADA]: 'Aprovada',
+        [CandidaturaStatus.REPROVADA]: 'Reprovada',
+      };
+      const observacao = saved.observacao?.trim();
+      const detalheObservacao = observacao
+        ? ` Observação da empresa: ${observacao}`
+        : '';
+
       const notificacao = this.notificacaoRepo.create({
         alunoId: candidatura.alunoId,
         titulo: 'Status da candidatura atualizado',
-        mensagem: `Sua candidatura teve o status atualizado para: ${data.status}.`,
+        mensagem: `Sua candidatura para a vaga "${candidatura.vaga.titulo}" está com o status: ${statusLabels[saved.status]}.${detalheObservacao}`,
       });
       await this.notificacaoRepo.save(notificacao);
     }

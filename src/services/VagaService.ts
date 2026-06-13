@@ -32,6 +32,10 @@ export class VagaService {
     return this.repo.find({ relations: ['empresa'], order: { createdAt: 'DESC' } });
   }
 
+  async findAllByEmpresa(empresaId: number): Promise<Vaga[]> {
+    return this.findByEmpresa(empresaId);
+  }
+
   async findById(id: number): Promise<Vaga> {
     const vaga = await this.repo.findOne({ where: { id }, relations: ['empresa'] });
     if (!vaga) throw new AppError('Vaga não encontrada', 404);
@@ -51,7 +55,10 @@ export class VagaService {
 
   async findAtivas(): Promise<Vaga[]> {
     return this.repo.find({
-      where: { status: VagaStatus.ATIVA },
+      where: {
+        status: VagaStatus.ATIVA,
+        empresa: { status: EmpresaStatus.APROVADA },
+      },
       relations: ['empresa'],
       order: { createdAt: 'DESC' },
     });

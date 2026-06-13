@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Candidatura } from './Candidatura';
 import { Notificacao } from './Notificacao';
+import { Usuario } from './Usuario';
 
 @Entity('alunos')
 export class Aluno {
@@ -19,6 +22,12 @@ export class Aluno {
 
   @Column({ unique: true, length: 255 })
   email: string;
+
+  @Column()
+  usuarioId: number;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  telefone: string | null;
 
   @Column({ length: 100 })
   curso: string;
@@ -40,4 +49,8 @@ export class Aluno {
 
   @OneToMany(() => Notificacao, (notificacao) => notificacao.aluno)
   notificacoes: Notificacao[];
+
+  @ManyToOne(() => Usuario)
+  @JoinColumn({ name: 'usuarioId' })
+  usuario: Usuario;
 }

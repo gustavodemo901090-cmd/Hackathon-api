@@ -13,9 +13,14 @@ export class NotificacaoService {
     return this.repo.find({ where, order: { createdAt: 'DESC' } });
   }
 
-  async marcarComoLida(id: number): Promise<Notificacao> {
+  async findByAluno(alunoId: number): Promise<Notificacao[]> {
+    return this.repo.find({ where: { alunoId }, order: { createdAt: 'DESC' } });
+  }
+
+  async marcarComoLida(id: number, alunoId?: number): Promise<Notificacao> {
     const notificacao = await this.repo.findOneBy({ id });
     if (!notificacao) throw new AppError('Notificação não encontrada', 404);
+    if (alunoId && notificacao.alunoId !== alunoId) throw new AppError('Acesso negado', 403);
 
     notificacao.lida = true;
     return this.repo.save(notificacao);

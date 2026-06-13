@@ -36,6 +36,18 @@ export class Vaga {
   @Column({ type: 'text' })
   requisitos: string;
 
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  area: string | null;
+
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  local: string | null;
+
+  @Column({ type: 'varchar', length: 60, nullable: true })
+  cargaHoraria: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  atividades: string | null;
+
   @Column({
     type: 'decimal',
     precision: 10,

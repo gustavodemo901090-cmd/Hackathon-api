@@ -6,6 +6,7 @@ import { Empresa } from '../entities/Empresa';
 import { Vaga } from '../entities/Vaga';
 import { Candidatura } from '../entities/Candidatura';
 import { Notificacao } from '../entities/Notificacao';
+import { Usuario } from '../entities/Usuario';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASS || '',
   database: process.env.DB_NAME || 'portal_estagios',
-  entities: [Aluno, Empresa, Vaga, Candidatura, Notificacao],
+  entities: [Usuario, Aluno, Empresa, Vaga, Candidatura, Notificacao],
   migrations: ['src/migrations/**/*.ts'],
   synchronize: false,
   logging: process.env.NODE_ENV === 'development',
