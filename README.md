@@ -51,6 +51,13 @@ npm run dev
 - `PUT /api/alunos/:id` — Atualizar aluno
 - `DELETE /api/alunos/:id` — Deletar aluno
 
+### Candidaturas (CRUD)
+- `POST /api/candidaturas` — Criar candidatura
+- `GET /api/candidaturas` — Listar candidaturas
+- `GET /api/candidaturas/:id` — Buscar candidatura por ID
+- `PUT /api/candidaturas/:id` — Atualizar candidatura (status)
+- `DELETE /api/candidaturas/:id` — Deletar candidatura
+
 ## Estrutura
 
 ```
@@ -60,23 +67,29 @@ src/
 ├── config/
 │   └── data-source.ts     # Configuração do TypeORM
 ├── entities/
-│   └── Aluno.ts
+│   ├── Aluno.ts
+│   └── Candidatura.ts
 ├── controllers/
-│   └── AlunoController.ts
+│   ├── AlunoController.ts
+│   └── CandidaturaController.ts
 ├── services/
-│   └── AlunoService.ts
+│   ├── AlunoService.ts
+│   └── CandidaturaService.ts
 ├── routes/
 │   ├── index.ts
 │   ├── health.routes.ts
-│   └── alunoRoutes.ts
+│   ├── alunoRoutes.ts
+│   └── candidaturaRoutes.ts
 ├── schemas/
-│   └── alunoSchema.ts
+│   ├── alunoSchema.ts
+│   └── candidaturaSchema.ts
 ├── middlewares/
 │   └── validateSchema.ts
 ├── errors/
 │   └── AppError.ts
 └── migrations/
-    └── 1700000000000-CreateAlunosTable.ts
+    ├── 1700000000000-CreateAlunosTable.ts
+    └── 1700000000003-CreateCandidaturasTable.ts
 ```
 
 ## Scripts
