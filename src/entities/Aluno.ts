@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Candidatura } from './Candidatura';
+import { Notificacao } from './Notificacao';
 
 @Entity('alunos')
 export class Aluno {
@@ -36,4 +37,7 @@ export class Aluno {
 
   @OneToMany(() => Candidatura, (candidatura) => candidatura.aluno)
   candidaturas: Candidatura[];
+
+  @OneToMany(() => Notificacao, (notificacao) => notificacao.aluno)
+  notificacoes: Notificacao[];
 }

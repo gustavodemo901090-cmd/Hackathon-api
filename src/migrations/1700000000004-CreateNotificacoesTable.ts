@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-export class CreateCandidaturasTable1700000000003 implements MigrationInterface {
+export class CreateNotificacoesTable1700000000004 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'candidaturas',
+        name: 'notificacoes',
         columns: [
           {
             name: 'id',
@@ -18,22 +18,21 @@ export class CreateCandidaturasTable1700000000003 implements MigrationInterface 
             type: 'int',
           },
           {
-            name: 'vagaId',
-            type: 'int',
+            name: 'titulo',
+            type: 'varchar',
+            length: '255',
           },
           {
-            name: 'status',
-            type: 'enum',
-            enum: ['PENDENTE', 'EM_ANALISE', 'APROVADA', 'REPROVADA'],
-            default: "'PENDENTE'",
-          },
-          {
-            name: 'observacao',
+            name: 'mensagem',
             type: 'text',
-            isNullable: true,
           },
           {
-            name: 'dataCandidatura',
+            name: 'lida',
+            type: 'tinyint',
+            default: 0,
+          },
+          {
+            name: 'createdAt',
             type: 'datetime',
             precision: 6,
             default: 'CURRENT_TIMESTAMP(6)',
@@ -44,7 +43,7 @@ export class CreateCandidaturasTable1700000000003 implements MigrationInterface 
     );
 
     await queryRunner.createForeignKey(
-      'candidaturas',
+      'notificacoes',
       new TableForeignKey({
         columnNames: ['alunoId'],
         referencedTableName: 'alunos',
@@ -52,19 +51,9 @@ export class CreateCandidaturasTable1700000000003 implements MigrationInterface 
         onDelete: 'CASCADE',
       }),
     );
-
-    await queryRunner.createForeignKey(
-      'candidaturas',
-      new TableForeignKey({
-        columnNames: ['vagaId'],
-        referencedTableName: 'vagas',
-        referencedColumnNames: ['id'],
-        onDelete: 'CASCADE',
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('candidaturas');
+    await queryRunner.dropTable('notificacoes');
   }
 }

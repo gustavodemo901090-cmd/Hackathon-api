@@ -8,13 +8,11 @@ export const createCandidaturaSchema = z.object({
 });
 
 export const updateCandidaturaSchema = z.object({
-  status: z
-    .nativeEnum(CandidaturaStatus, {
-      errorMap: () => ({
-        message: 'Status inválido. Use: PENDENTE, EM_ANALISE, APROVADA ou REPROVADA',
-      }),
-    })
-    .optional(),
+  status: z.nativeEnum(CandidaturaStatus, {
+    errorMap: () => ({
+      message: 'Status inválido. Use: PENDENTE, EM_ANALISE, APROVADA ou REPROVADA',
+    }),
+  }).optional(),
   observacao: z.string().optional(),
 });
 
