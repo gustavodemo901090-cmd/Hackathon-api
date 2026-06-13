@@ -11,10 +11,10 @@ router.post('/', validateSchema(createEmpresaSchema), EmpresaController.create);
 router.use(requireAuth);
 
 router.get('/', requireRole(['ADMIN', 'COORDENADOR', 'OPERADOR']), EmpresaController.findAll);
-router.get('/:id(\\d+)', EmpresaController.findById);
-router.put('/:id(\\d+)', validateSchema(updateEmpresaSchema), EmpresaController.update);
-router.delete('/:id(\\d+)', EmpresaController.delete);
-router.patch('/:id(\\d+)/aprovar', requireRole(['ADMIN', 'COORDENADOR', 'OPERADOR']), EmpresaController.aprovar);
-router.patch('/:id(\\d+)/bloquear', requireRole(['ADMIN', 'COORDENADOR', 'OPERADOR']), EmpresaController.bloquear);
+router.get('/:id', EmpresaController.findById);
+router.put('/:id', validateSchema(updateEmpresaSchema), EmpresaController.update);
+router.delete('/:id', EmpresaController.delete);
+router.patch('/:id/aprovar', requireRole(['ADMIN', 'COORDENADOR', 'OPERADOR']), EmpresaController.aprovar);
+router.patch('/:id/bloquear', requireRole(['ADMIN', 'COORDENADOR', 'OPERADOR']), EmpresaController.bloquear);
 
 export default router;

@@ -10,8 +10,8 @@ router.use(requireAuth, requireApprovedEmpresa);
 
 router.post('/', validateSchema(createCandidaturaSchema), CandidaturaController.create);
 router.get('/', CandidaturaController.findAll);
-router.get('/:id(\\d+)', CandidaturaController.findById);
-router.put('/:id(\\d+)', validateSchema(updateCandidaturaSchema), CandidaturaController.update);
-router.delete('/:id(\\d+)', CandidaturaController.delete);
+router.get('/:id', CandidaturaController.findById);
+router.put('/:id', validateSchema(updateCandidaturaSchema), CandidaturaController.update);
+router.delete('/:id', CandidaturaController.delete);
 
 export default router;

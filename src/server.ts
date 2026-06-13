@@ -14,8 +14,13 @@ const app = express();
 const PORT = process.env.PORT ?? 3000;
 // Middleware de segurança para definir headers HTTP
 app.use(helmet());
-// Configurações de CORS para permitir requisições do frontend e barrar outras origens
-app.use(cors());
+
+const allowedOrigins = (process.env.CORS_ORIGINS ?? 'http://localhost,http://127.0.0.1')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(cors({ origin: allowedOrigins }));
 app.use(express.json());
 
 app.use('/api', routes);

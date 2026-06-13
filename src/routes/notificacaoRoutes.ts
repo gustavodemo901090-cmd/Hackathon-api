@@ -7,6 +7,6 @@ const router = Router();
 router.use(requireAuth);
 
 router.get('/', NotificacaoController.findAll);
-router.patch('/:id(\\d+)/lida', NotificacaoController.marcarComoLida);
+router.patch('/:id/lida', NotificacaoController.marcarComoLida);
 
 export default router;
