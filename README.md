@@ -51,6 +51,15 @@ npm run dev
 - `PUT /api/alunos/:id` — Atualizar aluno
 - `DELETE /api/alunos/:id` — Deletar aluno
 
+### Empresas (CRUD)
+- `POST /api/empresas` — Criar empresa
+- `GET /api/empresas` — Listar empresas
+- `GET /api/empresas/:id` — Buscar empresa por ID
+- `PUT /api/empresas/:id` — Atualizar empresa
+- `DELETE /api/empresas/:id` — Deletar empresa
+- `PATCH /api/empresas/:id/aprovar` — Aprovar empresa
+- `PATCH /api/empresas/:id/bloquear` — Bloquear empresa
+
 ### Candidaturas (CRUD)
 - `POST /api/candidaturas` — Criar candidatura
 - `GET /api/candidaturas` — Listar candidaturas
@@ -68,20 +77,25 @@ src/
 │   └── data-source.ts     # Configuração do TypeORM
 ├── entities/
 │   ├── Aluno.ts
+│   ├── Empresa.ts
 │   └── Candidatura.ts
 ├── controllers/
 │   ├── AlunoController.ts
+│   ├── EmpresaController.ts
 │   └── CandidaturaController.ts
 ├── services/
 │   ├── AlunoService.ts
+│   ├── EmpresaService.ts
 │   └── CandidaturaService.ts
 ├── routes/
 │   ├── index.ts
 │   ├── health.routes.ts
 │   ├── alunoRoutes.ts
+│   ├── empresaRoutes.ts
 │   └── candidaturaRoutes.ts
 ├── schemas/
 │   ├── alunoSchema.ts
+│   ├── empresaSchema.ts
 │   └── candidaturaSchema.ts
 ├── middlewares/
 │   └── validateSchema.ts
@@ -89,6 +103,7 @@ src/
 │   └── AppError.ts
 └── migrations/
     ├── 1700000000000-CreateAlunosTable.ts
+    ├── 1700000000001-CreateEmpresasTable.ts
     └── 1700000000003-CreateCandidaturasTable.ts
 ```
 
