@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import dotenv from 'dotenv';
 import { Aluno } from '../entities/Aluno';
+import { Candidatura } from '../entities/Candidatura';
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER || 'root',
   password: process.env.DB_PASS || '',
   database: process.env.DB_NAME || 'portal_estagios',
-  entities: [Aluno],
+  entities: [Aluno, Candidatura],
   migrations: ['src/migrations/**/*.ts'],
   synchronize: false,
   logging: process.env.NODE_ENV === 'development',
