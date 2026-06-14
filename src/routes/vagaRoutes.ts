@@ -11,12 +11,12 @@ router.get('/ativas', VagaController.findAtivas);
 
 router.use(requireAuth, requireApprovedEmpresa);
 
-router.get('/empresa/:empresaId(\\d+)', VagaController.findByEmpresa);
+router.get('/empresa/:empresaId', VagaController.findByEmpresa);
 
 router.post('/', validateSchema(createVagaSchema), VagaController.create);
 router.get('/', VagaController.findAll);
-router.get('/:id(\\d+)', VagaController.findById);
-router.put('/:id(\\d+)', validateSchema(updateVagaSchema), VagaController.update);
-router.delete('/:id(\\d+)', VagaController.delete);
+router.get('/:id', VagaController.findById);
+router.put('/:id', validateSchema(updateVagaSchema), VagaController.update);
+router.delete('/:id', VagaController.delete);
 
 export default router;

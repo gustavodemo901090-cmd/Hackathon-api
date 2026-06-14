@@ -10,8 +10,8 @@ router.use(requireAuth, requireRole(['ADMIN', 'COORDENADOR', 'OPERADOR']));
 
 router.post('/', validateSchema(createUsuarioSchema), UsuarioController.create);
 router.get('/', UsuarioController.findAll);
-router.get('/:id(\\d+)', UsuarioController.findById);
-router.put('/:id(\\d+)', validateSchema(updateUsuarioSchema), UsuarioController.update);
-router.delete('/:id(\\d+)', UsuarioController.delete);
+router.get('/:id', UsuarioController.findById);
+router.put('/:id', validateSchema(updateUsuarioSchema), UsuarioController.update);
+router.delete('/:id', UsuarioController.delete);
 
 export default router;

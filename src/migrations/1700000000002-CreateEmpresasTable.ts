@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateEmpresasTable1700000000001 implements MigrationInterface {
+export class CreateEmpresasTable1700000000002 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -13,33 +13,12 @@ export class CreateEmpresasTable1700000000001 implements MigrationInterface {
             isGenerated: true,
             generationStrategy: 'increment',
           },
-          {
-            name: 'razaoSocial',
-            type: 'varchar',
-            length: '255',
-          },
-          {
-            name: 'nomeFantasia',
-            type: 'varchar',
-            length: '255',
-          },
-          {
-            name: 'cnpj',
-            type: 'varchar',
-            length: '18',
-            isUnique: true,
-          },
-          {
-            name: 'email',
-            type: 'varchar',
-            length: '255',
-            isUnique: true,
-          },
-          {
-            name: 'telefone',
-            type: 'varchar',
-            length: '20',
-          },
+          { name: 'razaoSocial', type: 'varchar', length: '255' },
+          { name: 'nomeFantasia', type: 'varchar', length: '255' },
+          { name: 'cnpj', type: 'varchar', length: '18', isUnique: true },
+          { name: 'email', type: 'varchar', length: '255', isUnique: true },
+          { name: 'usuarioId', type: 'int' },
+          { name: 'telefone', type: 'varchar', length: '20' },
           {
             name: 'status',
             type: 'enum',
@@ -58,6 +37,14 @@ export class CreateEmpresasTable1700000000001 implements MigrationInterface {
             precision: 6,
             default: 'CURRENT_TIMESTAMP(6)',
             onUpdate: 'CURRENT_TIMESTAMP(6)',
+          },
+        ],
+        foreignKeys: [
+          {
+            columnNames: ['usuarioId'],
+            referencedTableName: 'usuarios',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
           },
         ],
       }),

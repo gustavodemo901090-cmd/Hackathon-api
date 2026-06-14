@@ -1,6 +1,6 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateVagasTable1700000000002 implements MigrationInterface {
+export class CreateVagasTable1700000000003 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -13,25 +13,14 @@ export class CreateVagasTable1700000000002 implements MigrationInterface {
             isGenerated: true,
             generationStrategy: 'increment',
           },
-          {
-            name: 'titulo',
-            type: 'varchar',
-            length: '255',
-          },
-          {
-            name: 'descricao',
-            type: 'text',
-          },
-          {
-            name: 'requisitos',
-            type: 'text',
-          },
-          {
-            name: 'bolsa',
-            type: 'decimal',
-            precision: 10,
-            scale: 2,
-          },
+          { name: 'titulo', type: 'varchar', length: '255' },
+          { name: 'descricao', type: 'text' },
+          { name: 'requisitos', type: 'text' },
+          { name: 'area', type: 'varchar', length: '120', isNullable: true },
+          { name: 'local', type: 'varchar', length: '160', isNullable: true },
+          { name: 'cargaHoraria', type: 'varchar', length: '60', isNullable: true },
+          { name: 'atividades', type: 'text', isNullable: true },
+          { name: 'bolsa', type: 'decimal', precision: 10, scale: 2 },
           {
             name: 'modalidade',
             type: 'enum',
@@ -43,10 +32,7 @@ export class CreateVagasTable1700000000002 implements MigrationInterface {
             enum: ['ATIVA', 'ENCERRADA'],
             default: "'ATIVA'",
           },
-          {
-            name: 'empresaId',
-            type: 'int',
-          },
+          { name: 'empresaId', type: 'int' },
           {
             name: 'createdAt',
             type: 'datetime',
@@ -61,18 +47,16 @@ export class CreateVagasTable1700000000002 implements MigrationInterface {
             onUpdate: 'CURRENT_TIMESTAMP(6)',
           },
         ],
+        foreignKeys: [
+          {
+            columnNames: ['empresaId'],
+            referencedTableName: 'empresas',
+            referencedColumnNames: ['id'],
+            onDelete: 'CASCADE',
+          },
+        ],
       }),
       true,
-    );
-
-    await queryRunner.createForeignKey(
-      'vagas',
-      new TableForeignKey({
-        columnNames: ['empresaId'],
-        referencedTableName: 'empresas',
-        referencedColumnNames: ['id'],
-        onDelete: 'CASCADE',
-      }),
     );
   }
 

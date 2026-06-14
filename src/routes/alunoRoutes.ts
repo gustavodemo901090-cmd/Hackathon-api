@@ -11,8 +11,8 @@ router.post('/', validateSchema(createAlunoSchema), AlunoController.create);
 router.use(requireAuth);
 
 router.get('/', AlunoController.findAll);
-router.get('/:id(\\d+)', AlunoController.findById);
-router.put('/:id(\\d+)', validateSchema(updateAlunoSchema), AlunoController.update);
-router.delete('/:id(\\d+)', AlunoController.delete);
+router.get('/:id', AlunoController.findById);
+router.put('/:id', validateSchema(updateAlunoSchema), AlunoController.update);
+router.delete('/:id', AlunoController.delete);
 
 export default router;
