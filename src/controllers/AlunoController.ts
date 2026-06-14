@@ -51,7 +51,12 @@ export class AlunoController {
     try {
       const id = Number(req.params.id);
       denyIfNotOwner(req, id);
-      const aluno = await service.update(id, req.body);
+      const auth = getAuth(req);
+      const isAdminUser = ['ADMIN', 'COORDENADOR', 'OPERADOR'].includes(auth?.perfil ?? '');
+      // aptoEstagio é controlado exclusivamente pelo backoffice Java — alunos não podem auto-marcar.
+      const { aptoEstagio: _ignored, ...bodyWithoutApto } = req.body;
+      const body = isAdminUser ? req.body : bodyWithoutApto;
+      const aluno = await service.update(id, body);
       res.json({ success: true, data: aluno });
     } catch (err) {
       next(err);

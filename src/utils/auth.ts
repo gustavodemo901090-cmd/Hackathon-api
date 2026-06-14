@@ -10,7 +10,10 @@ export interface TokenPayload {
   exp: number;
 }
 
-const SECRET = process.env.AUTH_SECRET || 'portal-estagios-secret';
+// Lido em tempo de chamada (não de importação) para garantir que dotenv já foi configurado.
+function getSecret(): string {
+  return process.env.AUTH_SECRET ?? 'portal-estagios-secret';
+}
 
 export function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -56,7 +59,7 @@ export function signToken(payload: Omit<TokenPayload, 'exp'>, expiresInSeconds =
   };
 
   const encodedPayload = Buffer.from(JSON.stringify(fullPayload)).toString('base64url');
-  const signature = crypto.createHmac('sha256', SECRET).update(encodedPayload).digest('base64url');
+  const signature = crypto.createHmac('sha256', getSecret()).update(encodedPayload).digest('base64url');
   return `${encodedPayload}.${signature}`;
 }
 
@@ -64,7 +67,7 @@ export function verifyToken(token: string): TokenPayload | null {
   const [encodedPayload, signature] = token.split('.');
   if (!encodedPayload || !signature) return null;
 
-  const expected = crypto.createHmac('sha256', SECRET).update(encodedPayload).digest('base64url');
+  const expected = crypto.createHmac('sha256', getSecret()).update(encodedPayload).digest('base64url');
   if (signature.length !== expected.length) return null;
   if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
     return null;
