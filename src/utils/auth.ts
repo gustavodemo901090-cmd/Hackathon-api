@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 export interface TokenPayload {
   id: number;
@@ -10,10 +11,7 @@ export interface TokenPayload {
   exp: number;
 }
 
-// Lido em tempo de chamada (não de importação) para garantir que dotenv já foi configurado.
-function getSecret(): string {
-  return process.env.AUTH_SECRET ?? 'portal-estagios-secret';
-}
+const AUTH_SECRET = crypto.randomBytes(64).toString('hex');
 
 export function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -53,30 +51,12 @@ export function verifyPassword(password: string, stored: string): boolean {
 }
 
 export function signToken(payload: Omit<TokenPayload, 'exp'>, expiresInSeconds = 60 * 60 * 8): string {
-  const fullPayload: TokenPayload = {
-    ...payload,
-    exp: Math.floor(Date.now() / 1000) + expiresInSeconds,
-  };
-
-  const encodedPayload = Buffer.from(JSON.stringify(fullPayload)).toString('base64url');
-  const signature = crypto.createHmac('sha256', getSecret()).update(encodedPayload).digest('base64url');
-  return `${encodedPayload}.${signature}`;
+  return jwt.sign(payload, AUTH_SECRET, { expiresIn: expiresInSeconds });
 }
 
 export function verifyToken(token: string): TokenPayload | null {
-  const [encodedPayload, signature] = token.split('.');
-  if (!encodedPayload || !signature) return null;
-
-  const expected = crypto.createHmac('sha256', getSecret()).update(encodedPayload).digest('base64url');
-  if (signature.length !== expected.length) return null;
-  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
-    return null;
-  }
-
   try {
-    const payload = JSON.parse(Buffer.from(encodedPayload, 'base64url').toString('utf8')) as TokenPayload;
-    if (!payload.exp || payload.exp < Math.floor(Date.now() / 1000)) return null;
-    return payload;
+    return jwt.verify(token, AUTH_SECRET) as TokenPayload;
   } catch {
     return null;
   }
