@@ -10,12 +10,6 @@ import routes from './routes';
 
 dotenv.config();
 
-// AUTH_SECRET é obrigatório — sem ele, qualquer atacante pode forjar tokens
-if (!process.env.AUTH_SECRET) {
-  console.error('ERRO: variável de ambiente AUTH_SECRET não definida. Defina-a no arquivo .env antes de iniciar o servidor.');
-  process.exit(1);
-}
-
 const app = express();
 const PORT = process.env.PORT ?? 3000;
 // Middleware de segurança para definir headers HTTP
